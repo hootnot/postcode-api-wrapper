@@ -3,6 +3,12 @@ postcode-api-wrapper
 
 API Wrapper for the API of Postcode.nl
 
+Install
+========
+This module is also installable using **pip**
+
+        $ sudo pip install postcodepy
+
 
 About
 ==========
