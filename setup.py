@@ -8,9 +8,11 @@ from setuptools import setup
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
+requirements = map(str.strip, open("requirements.txt").readlines())
+
 setup(
     name = "postcodepy",
-    version = "0.0.1",
+    version = "0.0.2",
     author = "Feite Brekeveld",
     author_email = "f.brekeveld@gmail.com",
     description = ("API-wrapper to retrieve relevant address information based on 'postal code', or in Dutch: postcode/huisnummer"),
@@ -18,6 +20,7 @@ setup(
     keywords = "postcode.nl API wrapper python",
     url = "https://github.com/hootnot/postcode-api-wrapper",
     packages=['postcodepy', 'tests'],
+    install_requires = requirements,
     #package_data = { }
     #include_package_data = True,
     long_description=read('README'),
