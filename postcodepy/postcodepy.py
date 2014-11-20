@@ -43,9 +43,9 @@ class API(EndpointsMixin, object):
     self.client = requests.Session()
 
     if not access_key:
-      raise PostcodeError("ERR_AuthAccessKeyUnknown")
+      raise PostcodeError("ERRauthAccessUnknownKey")
     if not access_secret:
-      raise PostcodeError("ERR_AuthAccessSecretKeyUnknown")
+      raise PostcodeError("ERRauthAccessUnknownSecret")
 
     if headers:
       self.client.headers.update(headers)
@@ -54,7 +54,7 @@ class API(EndpointsMixin, object):
     self.client.auth = ( access_key, access_secret )
     
   def request(self, endpoint, method='GET', params=None):
-        """Returns dict of response from OANDA's open API
+        """Returns dict of response from postcode.nl API
         """
         url = '%s/%s' % ( self.api_url, endpoint)
 
@@ -76,9 +76,13 @@ class API(EndpointsMixin, object):
 
         content = json.loads(content)
 
-        # error message
-        if response.status_code >= 400:
-            raise PostcodeError("ERRnoData")
+        # error message 
+        if response.status_code == 400:
+            raise PostcodeError("APIServerERRnoData", content)
+        elif response.status_code >= 500 and response.status_code <= 599:
+            raise PostcodeError("APIServerERRinternalServerError", content)
+        elif response.status_code >= 400 and response.status_code <= 499:
+            raise PostcodeError("APIServerERRuserInputError", content)
 
         return content
 
@@ -86,16 +90,31 @@ class PostcodeError(Exception):
     """
         Generic error class, catches response errors
     """
+    error_code  = None
+    response_data  = None
+    msg = None
     __msgs = { "ERRnoPractice" : "For now there is no practice environment: 'live' is the only valid option",
-               "ERRnoData" : "No data found",
-               "ERR_AuthAccessKeyUnknown" : "Auth accesskey unknown",
-               "ERR_AuthAccessSecretKeyUnknown" : "Auth secret unknown",
+               "ERRauthAccessUnknownKey" : "Auth accesskey unknown",
+               "ERRauthAccessUnknownSecret" : "Auth secret unknown",
+               "APIServerERRnoData" : "No data found",
+               "APIServerERRuserInputError" : "User Input Error",
+               "APIServerERRinternalServerError" : "Internal Server Error",
              }
-    def __init__(self, error_response):
-        msg = "Postcode API returned error code %s: '%s'" % \
-           ( error_response, self.__msgs[error_response] )
+    def __init__(self, error_code, response_data=None):
+        self.error_code = error_code
+        self.response_data = response_data
+        _exception = ""
+        _exceptionId = ""
 
-        super(PostcodeError, self).__init__(msg)
+        self.msg = "EXCEPTION: %s (%s)" % ( error_code, self.__msgs[error_code] ) 
+
+        # add additional data if we have it
+        if response_data and response_data.has_key('exceptionId'):
+          self.msg += " ID: %s" %  response_data['exceptionId']
+        if response_data and response_data.has_key('exception'):
+          self.msg += " Description: %s" %  response_data['exception']
+
+        super(PostcodeError, self).__init__(self.msg)
 
 
 # ----------------------------------------------------------------------

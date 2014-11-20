@@ -34,29 +34,30 @@ Example
       access_secret="..."
       # get your access key and secret at https://api.postcode.nl
       
-      
-      from postcodepy.postcodepy import API, PostcodeError
-      
+      from postcodepy import postcodepy 
+
       import sys
       """First and third are OK, the 2nd is not OK and raises an Exception
            the exception is written to stderr
       """
-      api = API( environment='live', access_key=access_key, access_secret=access_secret)
+      api = postcodepy.API( environment='live', access_key=access_key, access_secret=access_secret)
       for pc in [ ('1071XX', 1), ('1077XX', 1), ('7514BP', 129) ]:
-        try:
-          retValue = api.get_postcodedata( pc[0], pc[1] )
-          # the raw resultvalue
-          print retValue
-          # The parsed result 
-          print "\nresults for: ", pc[0], pc[1]
-          for K in retValue.keys():
-            try:
-              print "%30s : %s" % (K, retValue[K] )
-            except Exception, e:
-              print "ERROR: ", K, retValue[K]
-      
-        except PostcodeError, e:
-          print >>sys.stderr, e, pc
+          try:
+            retValue = api.get_postcodedata( pc[0], pc[1] )
+            # the raw resultvalue
+            print retValue
+            # The parsed result 
+            print "\nresults for: ", pc[0], pc[1]
+            for K in retValue.keys():
+              try:
+                print "%30s : %s" % (K, retValue[K] )
+              except Exception, e:
+                print "ERROR: ", K
+
+          except postcodepy.PostcodeError, e:
+            print >>sys.stderr, e
+            print >>sys.stderr, pc
+            print >>sys.stderr, e.response_data
           
 ## Output
 
@@ -105,4 +106,7 @@ Running the script above will give you this output and the exception on stderr
 
 ## The exception of the 2nd postcode
 
-      Postcode API returned error code ERRnoData: 'No data found' ('1077XX', 1)
+
+      EXCEPTION: APIServerERRuserInputError (User Input Error) ID: PostcodeNl_Service_PostcodeAddress_AddressNotFoundException Description: Combination does not exist.
+      ('1077XX', 1)
+      {u'exception': u'Combination does not exist.', u'exceptionId': u'PostcodeNl_Service_PostcodeAddress_AddressNotFoundException'}

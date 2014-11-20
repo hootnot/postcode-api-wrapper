@@ -12,7 +12,7 @@ requirements = map(str.strip, open("requirements.txt").readlines())
 
 setup(
     name = "postcodepy",
-    version = "0.0.2",
+    version = "0.0.3",
     author = "Feite Brekeveld",
     author_email = "f.brekeveld@gmail.com",
     description = ("API-wrapper to retrieve relevant address information based on 'postal code', or in Dutch: postcode/huisnummer"),
