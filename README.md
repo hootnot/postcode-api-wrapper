@@ -49,11 +49,11 @@ Example
       # 2nd and last should fail
       for pc in [ ('1071XX', 1), ('1077XX', 1), ('7514BP', 129), ('7514BP', 129, 'A'), ('7514BP', 129, 'B')]:
           try:
-            retValue = api.get_postcodedata( pc[0], pc[1] )
+            retValue = api.get_postcodedata( *pc )
             # the raw resultvalue
             print retValue
             # The parsed result 
-            print "\nresults for: ", pc[0], pc[1]
+            print "\nresults for: ", pc
             for K in retValue.keys():
               try:
                 print "%30s : %s" % (K, retValue[K] )
