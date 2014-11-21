@@ -22,12 +22,23 @@ import requests
 
 class EndpointsMixin(object):
 
-  def get_postcodedata(self, postcode, nr, **params):
+  def get_postcodedata(self, postcode, nr, addition="", **params):
     """
         Get 'postcode' 
     """
     endpoint = 'rest/addresses/%s/%s' % ( postcode, nr)
-    return self.request(endpoint, params=params)
+    if addition:
+      endpoint += '/' + addition
+
+    retValue = self.request(endpoint, params=params)
+
+    # then it should match the houseNumberAdditions
+    if addition and not ( retValue.has_key('houseNumberAddition') and addition == retValue['houseNumberAddition']):
+      raise PostcodeError("ERRHouseNumberAdditionInvalid", { "exceptionId" : "ERRHouseNumberAdditionInvalid",
+                                                               "exception" : "Invalid housenumber addition: '%s'" % retValue['houseNumberAddition'],
+                                               "validHouseNumberAdditions" : retValue['houseNumberAdditions'] } )
+
+    return retValue
 
 
 class API(EndpointsMixin, object):
@@ -76,61 +87,74 @@ class API(EndpointsMixin, object):
 
         content = json.loads(content)
 
-        # error message 
-        if response.status_code == 400:
-            raise PostcodeError("APIServerERRnoData", content)
-        elif response.status_code >= 500 and response.status_code <= 599:
-            raise PostcodeError("APIServerERRinternalServerError", content)
-        elif response.status_code >= 400 and response.status_code <= 499:
-            raise PostcodeError("APIServerERRuserInputError", content)
+        if response.status_code == 200:
+          return content
 
-        return content
+        # Errors, otherwise we did not get here ...
+        if content.has_key('exceptionId'):
+            raise PostcodeError(content['exceptionId'], content)
+        
+        raise PostcodeError("UnknownExceptionFromPostcodeNl")
+
 
 class PostcodeError(Exception):
     """
         Generic error class, catches response errors
     """
-    error_code  = None
+
+    exceptionId  = None
     response_data  = None
     msg = None
-    __msgs = { "ERRnoPractice" : "For now there is no practice environment: 'live' is the only valid option",
-               "ERRauthAccessUnknownKey" : "Auth accesskey unknown",
-               "ERRauthAccessUnknownSecret" : "Auth secret unknown",
-               "APIServerERRnoData" : "No data found",
-               "APIServerERRuserInputError" : "User Input Error",
-               "APIServerERRinternalServerError" : "Internal Server Error",
-             }
-    def __init__(self, error_code, response_data=None):
-        self.error_code = error_code
-        self.response_data = response_data
-        _exception = ""
-        _exceptionId = ""
+    __eid = [
+               # Module exceptions
+              'ERRnoPractice',
+              'ERRauthAccessUnknownKey',
+              'ERRauthAccessUnknownSecret',
+               # API exceptions
+              'PostcodeNl_Controller_Plugin_HttpBasicAuthentication_Exception',
+              'PostcodeNl_Controller_Plugin_HttpBasicAuthentication_NotAuthorizedException',
+              'PostcodeNl_Api_RestClient_AuthenticationException',
+              'PostcodeNl_Controller_Plugin_HttpBasicAuthentication_PasswordNotCorrectException',
+              'React_Controller_Action_InvalidParameterException',
+              'PostcodeNl_Controller_Address_InvalidPostcodeException',
+              'PostcodeNl_Controller_Address_InvalidHouseNumberException',
+              'PostcodeNl_Controller_Address_NoPostcodeSpecifiedException',
+              'PostcodeNl_Controller_Address_NoHouseNumberSpecifiedException',
+              'React_Model_Property_Validation_Number_ValueTooHighException',
+              'PostcodeNl_Service_PostcodeAddress_AddressNotFoundException',
+              #
+              'ERRHouseNumberAdditionInvalid',
+              # NEEDS TO BE LAST !
+              'ERRUnknownExceptionFromPostcodeNl',
+    ]
 
-        self.msg = "EXCEPTION: %s (%s)" % ( error_code, self.__msgs[error_code] ) 
+    def __init__(self, exceptionId, response_data=None):
+        self.exceptionId = exceptionId if exceptionId in self.__eid else self.__eid[-1]
+        self.response_data = response_data
+
+        self.msg = ""
 
         # add additional data if we have it
-        if response_data and response_data.has_key('exceptionId'):
-          self.msg += " ID: %s" %  response_data['exceptionId']
         if response_data and response_data.has_key('exception'):
-          self.msg += " Description: %s" %  response_data['exception']
+          self.msg += response_data['exception']
 
         super(PostcodeError, self).__init__(self.msg)
 
 
 # ----------------------------------------------------------------------
 if __name__ == "__main__":
-  import sys
+  import sys, os
   """First and third are OK, the 2nd is not OK and raises an Exception
      the exception is written to stderr
   """
-  api = API( environment='live', access_key="", access_secret="")
-  for pc in [ ('1071XX', 1), ('1077XX', 1), ('7514BP', 129) ]:
+  api = API( environment='live', access_key=os.getenv("ACCESS_KEY"), access_secret=os.getenv("ACCESS_SECRET"))
+  for pc in [ ('1071XX', 1), ('8422DH', 34, 'B'), ('1077XX', 1), ('7514BP', 129) ]:
     try:
-      retValue = api.get_postcodedata( pc[0], pc[1] )
+      retValue = api.get_postcodedata( *pc )
       # the raw resultvalue
       print retValue
       # The parsed result 
-      print "\nresults for: ", pc[0], pc[1]
+      print "\nresults for: ", pc
       for K in retValue.keys():
         try:
           print "%30s : %s" % (K, retValue[K] )
@@ -138,5 +162,5 @@ if __name__ == "__main__":
           print "ERROR: ", K, retValue[K]
 
     except PostcodeError, e:
-      print >>sys.stderr, e, pc
+      print >>sys.stderr, e, pc, e.exceptionId, e.response_data
     
