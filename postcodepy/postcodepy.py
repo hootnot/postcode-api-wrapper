@@ -80,9 +80,15 @@ class API(EndpointsMixin, object):
             request_args['data'] = params
 
         try:
+            """ Normally some valid HTTP-response will be the case
+                if not some exception regarding the request / connection has occurred
+                this will be one of the exceptions of the request module
+                if so, we will a PostcodeError exception and pass the request exception message
+            """
             response = func(url, **request_args)
         except requests.RequestException as e:
-            print (str(e))
+            raise PostcodeError("ERRrequest", { "exception" : e.__doc__ } )
+
         content = response.content.decode('utf-8')
 
         content = json.loads(content)
@@ -106,6 +112,8 @@ class PostcodeError(Exception):
     response_data  = None
     msg = None
     __eid = [
+               # Request exceptions
+              'ERRrequest',
                # Module exceptions
               'ERRnoPractice',
               'ERRauthAccessUnknownKey',

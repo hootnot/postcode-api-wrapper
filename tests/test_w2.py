@@ -130,6 +130,24 @@ class TestUM(unittest.TestCase):
       expected_exception = postcodepy.PostcodeError("ERRauthAccessUnknownKey")
       self.assertEqual( expected_exception.exceptionId, caught_exception.exceptionId)
 
+
+    def test_request(self):
+      """ TEST: faulty URL, a request that should fail with 'A Connection error occurred.'
+      """
+      api = postcodepy.API( environment='live', access_key=access_key, access_secret=access_secret)
+      # Make the REST-API url point to some faulty url
+      api.api_url = "https://some/ur/l"
+      pc = ('1071 XX', 1)
+      with self.assertRaises( postcodepy.PostcodeError)  as cm:
+        api.get_postcodedata( *pc )
+
+      caught_exception = cm.exception
+      expected_exception = postcodepy.PostcodeError("ERRrequest", { 
+                                                         "exception" : "A Connection error occurred.",
+                                                       "exceptionId" : "ERRrequest"})
+      self.assertEqual( expected_exception.msg.decode('utf-8'), caught_exception.msg.decode('utf-8') )
+
+
 if __name__ == "__main__":
 
   unittest.main()
