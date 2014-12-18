@@ -148,6 +148,7 @@ class TestUM(unittest.TestCase):
                                                        "exceptionId" : "ERRrequest"})
       self.assertEqual( expected_exception.msg.decode('utf-8'), caught_exception.msg.decode('utf-8') )
 
+
     def test_signal_customer_transaction_1(self):
       """ TEST: signal check URL, a request that should report 1 warning, with 6 signals
       """
