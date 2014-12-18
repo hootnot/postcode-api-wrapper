@@ -2,6 +2,7 @@ import unittest
 from postcodepy import postcodepy
 
 import os, sys
+#import json
 
 access_key = None
 access_secret = None
@@ -146,6 +147,42 @@ class TestUM(unittest.TestCase):
                                                          "exception" : "A Connection error occurred.",
                                                        "exceptionId" : "ERRrequest"})
       self.assertEqual( expected_exception.msg.decode('utf-8'), caught_exception.msg.decode('utf-8') )
+
+    def test_signal_customer_transaction_1(self):
+      """ TEST: signal check URL, a request that should report 1 warning, with 6 signals
+      """
+      api = postcodepy.API( environment='live', access_key=access_key, access_secret=access_secret)
+
+      retValue = None
+      try:
+        dct = { "customer": {
+                                   "email": "test-address@postcode.nl",
+                             "phoneNumber": "+31235325689",
+                                 "address": {
+                                                "postcode": "2012ES",
+                                             "houseNumber": "30",
+                                                 "country": "NL"
+                                            }
+                            },
+             "transaction": {
+                              "internalId": "MyID-249084",
+                         "deliveryAddress": {
+                                             "postcode": "2012ES",
+                                          "houseNumber": "99",
+                                              "country": "NL"
+                                            }
+                            }
+               }
+          
+        retValue = api.get_signalcheck( dct )
+        #print >>sys.stderr, json.dumps(retValue, indent=4)
+        self.assertEqual( { "warningCount" : retValue['warningCount'],
+                            "lenOfSignalArray" : len(retValue['signals']),
+                          }, { "warningCount" : 1,
+                               "lenOfSignalArray" : 6 } )
+
+      except postcodepy.PostcodeError as e:
+        print >>sys.stderr, e, e.exceptionId, e.response_data
 
 
 if __name__ == "__main__":

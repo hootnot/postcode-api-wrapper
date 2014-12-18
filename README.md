@@ -13,7 +13,8 @@ This module is also installable using **pip**
 About
 ==========
 
-This module is handy to be used in web applications to autocomplete address information.
+This module is handy to be used in web applications to autocomplete address information. There is also an
+endpoint for information validation, enrichment and fraud risk check. See the docs for details.
 
 As it comes, it is specific for the Netherlands. So in Dutch:
 
@@ -21,6 +22,8 @@ As it comes, it is specific for the Netherlands. So in Dutch:
 Deze module is handig om in web-applicaties te gebruiken om op basis van postcode en huisnummer eenvoudig complete adres informatie op te kunnen vragen.
 
 De API van postcode.nl wordt hiervoor gebruikt. Op [https://api.postcode.nl](https://api.postcode.nl) kunt u zich registreren voor het gebruik van deze API en daarmee de beschikking krijgen over een 'secret' en een 'key' die benodigd zijn om deze API te kunnen gebruiken.
+
+De Signaal-API kan worden gebruikt voor validatie, controle en verrijking van transactie- en klantgegevens.
 
 Authentication
 ==============
@@ -150,3 +153,48 @@ Running the script above will give you this output and the exception on stderr
         ('7514BP', 129, 'B')
         ERRHouseNumberAdditionInvalid
         {'validHouseNumberAdditions': [u'', u'A'], 'exception': "Invalid housenumber addition: 'None'", 'exceptionId': 'ERRHouseNumberAdditionInvalid'}
+
+
+Signal API example
+==================
+
+      access_key="..."
+      access_secret="..."
+      # get your access key and secret at https://api.postcode.nl
+      
+      from postcodepy import postcodepy 
+
+      import os, sys
+      import json
+
+      """ TEST: signal check URL, a request that should report 1 warning, with 6 signals
+      """
+      api = postcodepy.API( environment='live', access_key=access_key, access_secret=access_secret)
+
+      retValue = None
+      try:
+          dct = { "customer": {
+                                   "email": "test-address@postcode.nl",
+                             "phoneNumber": "+31235325689",
+                                 "address": {
+                                                "postcode": "2012ES",
+                                             "houseNumber": "30",
+                                                 "country": "NL"
+                                            }
+                              },
+               "transaction": {
+                              "internalId": "MyID-249084",
+                         "deliveryAddress": {
+                                             "postcode": "2012ES",
+                                          "houseNumber": "99",
+                                              "country": "NL"
+                                            }
+                              }
+                 }
+          
+          retValue = api.get_signalcheck( dct )
+          print json.dumps(retValue, indent=4)
+
+      except postcodepy.PostcodeError as e:
+          print >>sys.stderr, e, e.exceptionId, e.response_data
+

@@ -40,6 +40,19 @@ class EndpointsMixin(object):
 
     return retValue
 
+  def get_signalcheck(self, sar, **params):
+    """
+        Get 'signal check'
+    """
+    params = sar
+    endpoint = 'rest/signal/check'
+
+    # The 'sar'-request dictionary should be sent as valid JSON data, so we need to convert it to JSON
+    # when we construct the request in API.request
+    retValue = self.request(endpoint, 'POST', params=params, convJSON=True)
+
+    return retValue
+
 
 class API(EndpointsMixin, object):
 
@@ -64,13 +77,15 @@ class API(EndpointsMixin, object):
     # Enable basic authentication
     self.client.auth = ( access_key, access_secret )
     
-  def request(self, endpoint, method='GET', params=None):
+  def request(self, endpoint, method='GET', params=None, convJSON=False):
         """Returns dict of response from postcode.nl API
         """
         url = '%s/%s' % ( self.api_url, endpoint)
 
         method = method.lower()
         params = params or {}
+        if convJSON:
+          params = json.dumps(params)
 
         func = getattr(self.client, method)
         request_args = {}
