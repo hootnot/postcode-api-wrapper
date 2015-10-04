@@ -3,6 +3,7 @@ postcode-api-wrapper
 ====================
 
 [![PyPI version](https://badge.fury.io/py/postcodepy.svg)](http://badge.fury.io/py/postcodepy)
+[![PyPI](https://img.shields.io/pypi/dm/postcodepy.svg)]()
 
 API Wrapper for the API of Postcode.nl
 
