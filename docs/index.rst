@@ -14,6 +14,7 @@ Contents:
 
    installation
    postcode-api-wrapper
+   examples
 
 Indices and tables
 ==================
