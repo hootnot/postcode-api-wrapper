@@ -3,10 +3,10 @@ postcodepy API
 
 .. automodule:: postcodepy.postcodepy
 
-Endpoints
----------
+Interface to the REST-service
+-----------------------------
 
-Interface to the REST-service.
+The REST-service endpoints are covered by the methods of ``postcode.API`` class.
 
 .. autoclass:: postcodepy.API
       :inherited-members:
