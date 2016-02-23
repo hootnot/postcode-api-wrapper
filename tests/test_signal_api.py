@@ -1,6 +1,6 @@
 """signal API tests."""
 import unittest
-from postcodepy import postcodepy
+import postcodepy
 
 import os
 import sys
