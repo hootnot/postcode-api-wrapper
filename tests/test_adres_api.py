@@ -13,8 +13,13 @@ api = None
 
 
 class Test_Adres_API(unittest.TestCase):
+    """Tests for Adres API."""
 
     def setUp(self):
+        """setup for tests.
+
+        provides an api instance
+        """
         global access_key
         global access_secret
         global api
@@ -30,7 +35,7 @@ class Test_Adres_API(unittest.TestCase):
                              access_secret=access_secret)
 
     def test_PostcodeDataOK(self):
-        """ TEST: retrieval of data.
+        """TEST: retrieval of data.
 
         should return testvalues for city and street
         """
@@ -40,7 +45,7 @@ class Test_Adres_API(unittest.TestCase):
                          ("Amsterdam", "Museumstraat"))
 
     def test_PostcodeDataWithAdditionOK(self):
-        """ TEST: retrieval of data.
+        """TEST: retrieval of data.
 
         should return testvalues for city, street, housenumber, and
         housenumber addition
@@ -87,7 +92,7 @@ class Test_Adres_API(unittest.TestCase):
                          caught_exception.msg.decode('utf-8'))
 
     def test_PostcodeWrongFormat(self):
-        """TEST: no data for this postcode
+        """TEST: no data for this postcode.
 
         a request that should fail with:
         PostcodeNl_Controller_Address_InvalidPostcodeException
@@ -165,7 +170,7 @@ class Test_Adres_API(unittest.TestCase):
                          caught_exception.exceptionId)
 
     def test_FailArgNotPassedKey(self):
-        """TEST: no key provided
+        """TEST: no key provided.
 
         a request that should fail with a ERRauthAccessUnknownKey
         """
