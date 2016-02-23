@@ -12,6 +12,7 @@ Interface to the REST-service.
       :inherited-members:
       :show-inheritance:
       :special-members: __init__
+      :exclude-members: request
 
 Exceptions
 ----------
