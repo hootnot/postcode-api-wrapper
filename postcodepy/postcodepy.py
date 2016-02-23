@@ -12,7 +12,25 @@ class EndpointsMixin(object):
     """
 
     def get_postcodedata(self, postcode, nr, addition="", **params):
-        """get_postcodedata - fetch information for 'postcode'."""
+        """get_postcodedata - fetch information for 'postcode'.
+
+        Parameters
+        ----------
+        postcode : string
+            The full (dutch) postcode
+
+        nr : int
+            The housenumber
+
+        addition : string (optional)
+            the extension to a housenumber
+
+        params : dict (optional)
+            a list of parameters to send with the request.
+
+        returns :
+            a response dictionary
+        """
         endpoint = 'rest/addresses/%s/%s' % (postcode, nr)
         if addition:
             endpoint += '/' + addition
@@ -33,7 +51,17 @@ class EndpointsMixin(object):
         return retValue
 
     def get_signalcheck(self, sar, **params):
-        """get_signalcheck -  perform a signal check."""
+        """get_signalcheck -  perform a signal check.
+
+        Parameters
+        ----------
+            sar (dict): signal-api-request specified as a dictionary of
+                parameters. All of these parameters are optional. For details
+                check https://api.postcode.nl/documentation/signal-api-example.
+
+        returns :
+            a response dictionary
+        """
         params = sar
         endpoint = 'rest/signal/check'
 
@@ -50,7 +78,27 @@ class API(EndpointsMixin, object):
 
     def __init__(self, environment="practice", access_key=None,
                  access_secret=None, headers=None):
-        """Instantiate API wrapper."""
+        """Instantiate API wrapper.
+
+        Parameters
+        ----------
+        environment : str
+           the environment to use. Currently only 'live'.
+
+        access_key : str
+            the access key provided by postcode.nl . If not provided
+            an ERRauthAccessUnknownKey exception is raised
+
+        access_secret : str
+            the access secret provided by postcode.nl . If not provided
+            an ERRauthAccessUnknownSecret exception is raised
+
+        headers : dict
+            optional headers to set
+
+        returns :
+            a response dictionary
+        """
         if environment == 'practice':
             raise PostcodeError("ERRnoPractice")
         elif environment == 'live':
@@ -70,7 +118,10 @@ class API(EndpointsMixin, object):
         self.client.auth = (access_key, access_secret)
 
     def request(self, endpoint, method='GET', params=None, convJSON=False):
-        """request - Returns dict of response from postcode.nl API."""
+        """request - Returns dict of response from postcode.nl API.
+
+        this method is called by the EndpointMixin methods
+        """
         url = '%s/%s' % (self.api_url, endpoint)
 
         method = method.lower()
@@ -142,7 +193,18 @@ class PostcodeError(Exception):
     ]
 
     def __init__(self, exceptionId, response_data=None):
-        """instantiate PostcodeError instance."""
+        """instantiate PostcodeError instance.
+
+        Parameters
+        ----------
+        exceptionId : str
+            the id of the exception. It should match one of the known exception
+            id's. If it does not match it is set to:
+            ERRUnknownExceptionFromPostcodeNl
+
+        response_data : data
+            the data received at the moment the exception occurred
+        """
         if exceptionId in self.__eid:
             self.exceptionId = exceptionId
         else:
