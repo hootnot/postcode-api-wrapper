@@ -55,9 +55,10 @@ class EndpointsMixin(object):
 
         Parameters
         ----------
-            sar (dict): signal-api-request specified as a dictionary of
-                parameters. All of these parameters are optional. For details
-                check https://api.postcode.nl/documentation/signal-api-example.
+        sar : dict
+            signal-api-request specified as a dictionary of parameters.
+            All of these parameters are optional. For details
+            check https://api.postcode.nl/documentation/signal-api-example.
 
         returns :
             a response dictionary
