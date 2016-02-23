@@ -1,1 +1,1 @@
-from .postcodepy import API, PostcodeError
+from .postcodepy import API, PostcodeError    # flake8: noqa
