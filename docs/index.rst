@@ -13,7 +13,7 @@ Contents:
    :caption: Postcode-API wrapper 
 
    installation
-
+   postcode-api-wrapper
 
 Indices and tables
 ==================
