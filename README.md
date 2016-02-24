@@ -2,8 +2,10 @@
 postcode-api-wrapper
 ====================
 
+[![Documentation Status](http://readthedocs.org/projects/postcode-api-wrapper/badge/?version=latest)](http://postcode-api-wrapper.readthedocs.org/en/latest/?badge=latest)
 [![PyPI version](https://badge.fury.io/py/postcodepy.svg)](http://badge.fury.io/py/postcodepy)
 [![PyPI](https://img.shields.io/pypi/dm/postcodepy.svg)]()
+[![Code Health](https://landscape.io/github/hootnot/postcode-api-wrapper/master/landscape.svg?style=flat)](https://landscape.io/github/hootnot/postcode-api-wrapper/master)
 
 API Wrapper for the API of Postcode.nl
 
