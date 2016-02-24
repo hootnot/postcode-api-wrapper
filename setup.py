@@ -10,11 +10,21 @@ from setuptools import setup
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
+
+def get_version(package):
+    """
+    Return package version as listed in `__version__` in `init.py`.
+    """
+    init_py = open(os.path.join(package, '__init__.py')).read()
+    return re.search("__version__ = ['\"]([^'\"]+)['\"]", init_py).group(1)
+
 requirements = map(str.strip, open("requirements.txt").readlines())
+
+version = get_version('postcodepy')
 
 setup(
     name="postcodepy",
-    version="0.0.4",
+    version=version,
     author="Feite Brekeveld",
     author_email="f.brekeveld@gmail.com",
     description=("API-wrapper for postcode.nl REST-API to retrieve relevant "
