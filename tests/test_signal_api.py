@@ -4,7 +4,7 @@ import postcodepy
 
 import os
 import sys
-import unittestsetup
+from . import unittestsetup
 
 access_key = None
 access_secret = None

@@ -2,7 +2,7 @@
 import unittest
 import postcodepy
 from postcodepy import PostcodeError
-import unittestsetup
+from . import unittestsetup
 
 import os
 import sys
@@ -88,8 +88,8 @@ class Test_Adres_API(unittest.TestCase):
                 "exception": "Combination does not exist.",
                 "exceptionId": "PostcodeNl_Service_PostcodeAddress_"
                                "AddressNotFoundException"})
-        self.assertEqual(expected_exception.msg.decode('utf-8'),
-                         caught_exception.msg.decode('utf-8'))
+        self.assertEqual(expected_exception.msg,
+                         caught_exception.msg)
 
     def test_PostcodeWrongFormat(self):
         """TEST: no data for this postcode.
@@ -107,8 +107,8 @@ class Test_Adres_API(unittest.TestCase):
                 "exception": "Postcode does not use format `1234AB`.",
                 "exceptionId": "PostcodeNl_Controller_Address_"
                                "InvalidPostcodeException"})
-        self.assertEqual(expected_exception.msg.decode('utf-8'),
-                         caught_exception.msg.decode('utf-8'))
+        self.assertEqual(expected_exception.msg,
+                         caught_exception.msg)
 
     def test_PostcodeInvalidUserAccount(self):
         """TEST: invalid useraccount.
@@ -130,8 +130,8 @@ class Test_Adres_API(unittest.TestCase):
             "PostcodeNl_Controller_Plugin_HttpBasicAuthentication_NotAuthorizedException", {
                 "exception": "User `1%s` not correct." % access_key,
                 "exceptionId": "PostcodeNl_Controller_Plugin_HttpBasicAuthentication_NotAuthorizedException"})
-        self.assertEqual(expected_exception.msg.decode('utf-8'),
-                         caught_exception.msg.decode('utf-8'))
+        self.assertEqual(expected_exception.msg,
+                         caught_exception.msg)
 
     def test_PostcodeInvalidUserSecret(self):
         """TEST: invalid secret.
@@ -153,8 +153,8 @@ class Test_Adres_API(unittest.TestCase):
             "PostcodeNl_Controller_Plugin_HttpBasicAuthentication_PasswordNotCorrectException", {
                 "exception": "Password not correct.",
                 "exceptionId": "PostcodeNl_Controller_Plugin_HttpBasicAuthentication_PasswordNotCorrectException"})
-        self.assertEqual(expected_exception.msg.decode('utf-8'),
-                         caught_exception.msg.decode('utf-8'))
+        self.assertEqual(expected_exception.msg,
+                         caught_exception.msg)
 
     def test_FailArgNotPassedSecret(self):
         """TEST: no secret provided.
@@ -199,8 +199,8 @@ class Test_Adres_API(unittest.TestCase):
                               "ERRrequest", {
                                   "exception": "A Connection error occurred.",
                                   "exceptionId": "ERRrequest"})
-        self.assertEqual(expected_exception.msg.decode('utf-8'),
-                         caught_exception.msg.decode('utf-8'))
+        self.assertEqual(expected_exception.msg,
+                         caught_exception.msg)
 
 
 if __name__ == "__main__":
