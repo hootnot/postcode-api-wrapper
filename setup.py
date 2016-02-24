@@ -1,4 +1,5 @@
 import os
+import re
 from setuptools import setup
 
 # Utility function to read the README file.
