@@ -241,7 +241,7 @@ if __name__ == "__main__":
             for K in retValue.keys():
                 try:
                     print("%30s : %s" % (K, retValue[K]))
-                except Exception, e:
+                except Exception as e:
                     print("ERROR: ", K, retValue[K])
 
         except PostcodeError as e:
