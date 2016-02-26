@@ -6,7 +6,7 @@
                                   |_| |___|
 
 """
-__title__ = "Postcode API Wrapperi for the REST API of Postcode.nl"
+__title__ = "Postcode API Wrapper for the REST API of Postcode.nl"
 __version__ = "1.0.1"
 __author__ = "Feite Brekeveld"
 __license__ = "MIT"
