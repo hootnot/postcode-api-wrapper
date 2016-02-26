@@ -38,8 +38,8 @@ class EndpointsMixin(object):
         retValue = self.request(endpoint, params=params)
 
         # then it should match the houseNumberAdditions
-        if addition and not ('houseNumberAddition' in retValue and
-                             addition == retValue['houseNumberAddition']):
+        if addition and addition.upper() not in \
+           [a.upper() for a in retValue['houseNumberAdditions']]:
             raise PostcodeError(
                     "ERRHouseNumberAdditionInvalid",
                     {"exceptionId": "ERRHouseNumberAdditionInvalid",
@@ -230,8 +230,13 @@ if __name__ == "__main__":
 
     api = API(environment='live', access_key=os.getenv("ACCESS_KEY"),
               access_secret=os.getenv("ACCESS_SECRET"))
-    for pc in [('1071XX', 1), ('8422DH', 34, 'B'),
-               ('1077XX', 1), ('7514BP', 129)]:
+    for pc in [('1071XX', 1),
+               ('1077XX', 1),
+               ('7514BP', 129),
+               ('7514BP', 129, 'A'),
+               ('7514BP', 129, 'a'),
+               ('7514BP', 129, 'b'),
+               ]:
         try:
             retValue = api.get_postcodedata(*pc)
             # the raw resultvalue
