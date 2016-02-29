@@ -222,7 +222,7 @@ class PostcodeError(Exception):
 
 
 # ----------------------------------------------------------------------
-if __name__ == "__main__":
+if __name__ == "__main__":    # pragma: no cover
     import sys
     import os
     # First and third are OK, the 2nd is not OK and raises an Exception
