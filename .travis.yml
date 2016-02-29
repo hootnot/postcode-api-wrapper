@@ -1,7 +1,7 @@
 language: python
 python:
 - '2.7'
-- '3.2'
+# - '3.2' Gives an error in coverage module itself
 - '3.3'
 - '3.4'
 - '3.5'
