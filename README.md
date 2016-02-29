@@ -2,10 +2,12 @@
 postcode-api-wrapper
 ====================
 
+[![Build Status](https://travis-ci.org/hootnot/postcode-api-wrapper.svg?branch=master)](https://travis-ci.org/hootnot/postcode-api-wrapper)
 [![Documentation Status](http://readthedocs.org/projects/postcode-api-wrapper/badge/?version=latest)](http://postcode-api-wrapper.readthedocs.org/en/latest/?badge=latest)
 [![PyPI version](https://badge.fury.io/py/postcodepy.svg)](http://badge.fury.io/py/postcodepy)
 [![PyPI](https://img.shields.io/pypi/dm/postcodepy.svg)]()
 [![Code Health](https://landscape.io/github/hootnot/postcode-api-wrapper/master/landscape.svg?style=flat)](https://landscape.io/github/hootnot/postcode-api-wrapper/master)
+[![Coverage Status](https://coveralls.io/repos/github/hootnot/postcode-api-wrapper/badge.svg?branch=master)](https://coveralls.io/github/hootnot/postcode-api-wrapper?branch=master)
 
 API Wrapper for the API of Postcode.nl
 
