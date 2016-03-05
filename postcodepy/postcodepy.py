@@ -165,9 +165,6 @@ class API(EndpointsMixin, object):
 class PostcodeError(Exception):
     """PostcodeError - Generic error class, catches response errors."""
 
-    exceptionId = None
-    response_data = None
-    msg = None
     __eid = [
             # Request exceptions
             'ERRrequest',
