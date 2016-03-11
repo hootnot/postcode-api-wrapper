@@ -165,9 +165,6 @@ class API(EndpointsMixin, object):
 class PostcodeError(Exception):
     """PostcodeError - Generic error class, catches response errors."""
 
-    exceptionId = None
-    response_data = None
-    msg = None
     __eid = [
             # Request exceptions
             'ERRrequest',
@@ -239,16 +236,12 @@ if __name__ == "__main__":    # pragma: no cover
                ]:
         try:
             retValue = api.get_postcodedata(*pc)
-            # the raw resultvalue
-            print(retValue)
-            # The parsed result
-            print("\nresults for: ", pc)
-            for K in retValue.keys():
-                try:
-                    print("%30s : %s" % (K, retValue[K]))
-                except Exception as e:
-                    print("ERROR: ", K, retValue[K])
+            print("\nresults for: {}".format(str(pc)))
+            print(json.dumps(retValue, sort_keys=True, indent=2))
 
         except PostcodeError as e:
-            sys.stderr.write("%s, %s, %s, %s" %
-                             (e, pc, e.exceptionId, e.response_data))
+            sys.stderr.write("{}, {}, {}".format(
+                             str(pc), e.exceptionId,
+                             json.dumps(e.response_data,
+                                        sort_keys=True,
+                                        indent=2)))

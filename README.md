@@ -43,126 +43,152 @@ an **access_key** and a **access_secret**.
 Example
 ===========
 
-      access_key="..."
-      access_secret="..."
-      # get your access key and secret at https://api.postcode.nl
-      
-      from postcodepy import postcodepy 
+    import os
+    import sys
+    import json
+    import postcodepy
 
-      import sys
-      """First and third are OK, the 2nd is not OK and raises an Exception
-           the exception is written to stderr
-      """
-      api = postcodepy.API( environment='live', access_key=access_key, access_secret=access_secret)
+    access_key = os.getenv("ACCESS_KEY")
+    access_secret = os.getenv("ACCESS_SECRET")
+    # get your access key and secret at https://api.postcode.nl
 
-      # exit program if one of these exceptions occurs
-      fatals = ['PostcodeNl_Controller_Plugin_HttpBasicAuthentication_NotAuthorizedException',
-                'PostcodeNl_Controller_Plugin_HttpBasicAuthentication_PasswordNotCorrectException' ]
+    """First and third are OK, the 2nd is not OK and raises an Exception
+         the exception is written to stderr
+    """
+    api = postcodepy.API(environment='live',
+                         access_key=access_key, access_secret=access_secret)
 
-      # 2nd and last should fail
-      for pc in [ ('1071XX', 1), ('1077XX', 1), ('7514BP', 129), ('7514BP', 129, 'A'), ('7514BP', 129, 'B')]:
-          try:
-            retValue = api.get_postcodedata( *pc )
-            # the raw resultvalue
-            print retValue
-            # The parsed result 
-            print "\nresults for: ", pc
-            for K in retValue.keys():
-              try:
-                print "%30s : %s" % (K, retValue[K] )
-              except Exception, e:
-                print "ERROR: ", K
+    # exit program if one of these exceptions occurs
+    fatals = [
+        'PostcodeNl_Controller_Plugin_HttpBasicAuthentication_NotAuthorizedException',
+        'PostcodeNl_Controller_Plugin_HttpBasicAuthentication_PasswordNotCorrectException'
+    ]
 
-          except postcodepy.PostcodeError, e:
+    # 2nd and last should fail
+    for pc in [('1071XX', 1),
+               ('1077XX', 1),
+               ('7514BP', 129),
+               ('7514BP', 129, 'A'),
+               ('7514BP', 129, 'B')]:
+        try:
+            retValue = api.get_postcodedata(*pc)
+            print("\nresults for: {}".format(str(pc)))
+            print(json.dumps(retValue, sort_keys=True, indent=2))
+
+        except postcodepy.PostcodeError as e:
             if e.exceptionId in fatals:
-              print >>sys.stderr, "Exiting on fatal exception: %s [%s]" % (e.exceptionId, e.msg)
-              sys.exit(2)
+                sys.stderr.write("Exiting on fatal exception: {} [{}]".
+                                 format(e.exceptionId, e.msg))
+                sys.exit(2)
             else:
-              print >>sys.stderr, "---------------------------"
-              print >>sys.stderr, e
-              print >>sys.stderr, pc
-              print >>sys.stderr, e.exceptionId
-              print >>sys.stderr, e.response_data
+                sys.stderr.write("---------------------------\n")
+                sys.stderr.write("{}\n".format(str(pc)))
+                sys.stderr.write("{}\n".format(e.exceptionId))
+                sys.stderr.write("{}\n".format(json.dumps(
+                      e.response_data, sort_keys=True, indent=2))
+                )
 
-          
 ## Output
 
-Running the script above will give you this output and the exception on stderr
+Running the script above will give you this JSON output and the exception on stderr
 
-
-       {u'province': u'Noord-Holland', u'city': u'Amsterdam', u'bagAddressableObjectId': u'0363010012073352', u'addressType': u'building', u'rdY': 485901, u'bagNumberDesignationId': u'0363200012073684', u'municipality': u'Amsterdam', u'rdX': 120816, u'longitude': 4.88538896, u'purposes': [u'assembly'], u'houseNumberAddition': u'', u'street': u'Museumstraat', u'postcode': u'1071XX', u'houseNumberAdditions': [u''], u'latitude': 52.35994439, u'surfaceArea': 38149, u'houseNumber': 1}
-
-       results for:  ('1071XX', 1)
-                      province : Noord-Holland
-                          city : Amsterdam
-        bagAddressableObjectId : 0363010012073352
-                   addressType : building
-                           rdY : 485901
-        bagNumberDesignationId : 0363200012073684
-                  municipality : Amsterdam
-                           rdX : 120816
-                     longitude : 4.88538896
-                      purposes : [u'assembly']
-           houseNumberAddition : 
-                        street : Museumstraat
-                      postcode : 1071XX
-          houseNumberAdditions : [u'']
-                      latitude : 52.35994439
-                   surfaceArea : 38149
-                   houseNumber : 1
-       {u'province': u'Overijssel', u'city': u'Enschede', u'bagAddressableObjectId': u'0153010000345343', u'addressType': u'building', u'rdY': 472143, u'bagNumberDesignationId': u'0153200000345342', u'municipality': u'Enschede', u'rdX': 258149, u'longitude': 6.89701549, u'purposes': [u'industry'], u'houseNumberAddition': u'', u'street': u'Lasondersingel', u'postcode': u'7514BP', u'houseNumberAdditions': [u'', u'A'], u'latitude': 52.22770127, u'surfaceArea': 6700, u'houseNumber': 129}
-
-       results for:  ('7514BP', 129)
-                      province : Overijssel
-                          city : Enschede
-        bagAddressableObjectId : 0153010000345343
-                   addressType : building
-                           rdY : 472143
-        bagNumberDesignationId : 0153200000345342
-                  municipality : Enschede
-                           rdX : 258149
-                     longitude : 6.89701549
-                      purposes : [u'industry']
-           houseNumberAddition : 
-                        street : Lasondersingel
-                      postcode : 7514BP
-          houseNumberAdditions : [u'', u'A']
-                      latitude : 52.22770127
-                   surfaceArea : 6700
-                   houseNumber : 129
-       {u'province': u'Overijssel', u'city': u'Enschede', u'bagAddressableObjectId': u'0153010000329929', u'addressType': u'building', u'rdY': 472143, u'bagNumberDesignationId': u'0153200000329928', u'municipality': u'Enschede', u'rdX': 258149, u'longitude': 6.89701549, u'purposes': [u'residency'], u'houseNumberAddition': u'A', u'street': u'Lasondersingel', u'postcode': u'7514BP', u'houseNumberAdditions': [u'', u'A'], u'latitude': 52.22770127, u'surfaceArea': 119, u'houseNumber': 129}
-
-       results for:  ('7514BP', 129, 'A')
-                      province : Overijssel
-                          city : Enschede
-        bagAddressableObjectId : 0153010000329929
-                   addressType : building
-                           rdY : 472143
-        bagNumberDesignationId : 0153200000329928
-                  municipality : Enschede
-                           rdX : 258149
-                     longitude : 6.89701549
-                      purposes : [u'residency']
-           houseNumberAddition : A
-                        street : Lasondersingel
-                      postcode : 7514BP
-          houseNumberAdditions : [u'', u'A']
-                      latitude : 52.22770127
-                   surfaceArea : 119
-                   houseNumber : 129
+    results for: ('1071XX', 1)
+    {
+      "addressType": "building", 
+      "bagAddressableObjectId": "0363010012073352", 
+      "bagNumberDesignationId": "0363200012073684", 
+      "city": "Amsterdam", 
+      "houseNumber": 1, 
+      "houseNumberAddition": "", 
+      "houseNumberAdditions": [
+        ""
+      ], 
+      "latitude": 52.35994439, 
+      "longitude": 4.88538896, 
+      "municipality": "Amsterdam", 
+      "postcode": "1071XX", 
+      "province": "Noord-Holland", 
+      "purposes": [
+        "assembly"
+      ], 
+      "rdX": 120816, 
+      "rdY": 485901, 
+      "street": "Museumstraat", 
+      "surfaceArea": 38149
+    }
+    
+    results for: ('7514BP', 129)
+    {
+      "addressType": "building", 
+      "bagAddressableObjectId": "0153010000345343", 
+      "bagNumberDesignationId": "0153200000345342", 
+      "city": "Enschede", 
+      "houseNumber": 129, 
+      "houseNumberAddition": "", 
+      "houseNumberAdditions": [
+        "", 
+        "A"
+      ], 
+      "latitude": 52.22770127, 
+      "longitude": 6.89701549, 
+      "municipality": "Enschede", 
+      "postcode": "7514BP", 
+      "province": "Overijssel", 
+      "purposes": [
+        "assembly"
+      ], 
+      "rdX": 258149, 
+      "rdY": 472143, 
+      "street": "Lasondersingel", 
+      "surfaceArea": 6700
+    }
+    
+    results for: ('7514BP', 129, 'A')
+    {
+      "addressType": "building", 
+      "bagAddressableObjectId": "0153010000329929", 
+      "bagNumberDesignationId": "0153200000329928", 
+      "city": "Enschede", 
+      "houseNumber": 129, 
+      "houseNumberAddition": "A", 
+      "houseNumberAdditions": [
+        "", 
+        "A"
+      ], 
+      "latitude": 52.22770127, 
+      "longitude": 6.89701549, 
+      "municipality": "Enschede", 
+      "postcode": "7514BP", 
+      "province": "Overijssel", 
+      "purposes": [
+        "residency"
+      ], 
+      "rdX": 258149, 
+      "rdY": 472143, 
+      "street": "Lasondersingel", 
+      "surfaceArea": 119
+    }
 
 ## The exception of the 2nd postcode and last
 
-        ---------------------------
-        Combination does not exist.
-        ('1077XX', 1)
-        PostcodeNl_Service_PostcodeAddress_AddressNotFoundException
-        {u'exception': u'Combination does not exist.', u'exceptionId': u'PostcodeNl_Service_PostcodeAddress_AddressNotFoundException'}
-        ---------------------------
-        Invalid housenumber addition: 'None'
-        ('7514BP', 129, 'B')
-        ERRHouseNumberAdditionInvalid
-        {'validHouseNumberAdditions': [u'', u'A'], 'exception': "Invalid housenumber addition: 'None'", 'exceptionId': 'ERRHouseNumberAdditionInvalid'}
+    ---------------------------
+    ('1077XX', 1)
+    PostcodeNl_Service_PostcodeAddress_AddressNotFoundException
+    {
+      "exception": "Combination does not exist.", 
+      "exceptionId": "PostcodeNl_Service_PostcodeAddress_AddressNotFoundException"
+    }
+    ---------------------------
+    ('7514BP', 129, 'B')
+    ERRHouseNumberAdditionInvalid
+    {
+      "exception": "Invalid housenumber addition: 'None'", 
+      "exceptionId": "ERRHouseNumberAdditionInvalid", 
+      "validHouseNumberAdditions": [
+        "", 
+        "A"
+      ]
+    }
 
 
 Signal API example
@@ -203,8 +229,8 @@ Signal API example
                  }
           
           retValue = api.get_signalcheck( dct )
-          print json.dumps(retValue, indent=4)
+          print(json.dumps(retValue, indent=4))
 
       except postcodepy.PostcodeError as e:
-          print >>sys.stderr, e, e.exceptionId, e.response_data
-
+          sys.stderr.write("{}, {}, {}".format(e, e.exceptionId,
+                                               json.dumps(e.response_data, sort_keys=True, indent=2))
