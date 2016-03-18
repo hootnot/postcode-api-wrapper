@@ -182,6 +182,7 @@ class PostcodeError(Exception):
             'PostcodeNl_Controller_Address_InvalidHouseNumberException',
             'PostcodeNl_Controller_Address_NoPostcodeSpecifiedException',
             'PostcodeNl_Controller_Address_NoHouseNumberSpecifiedException',
+            'PostcodeNl_Controller_Address_PostcodeTooLongException',
             'React_Model_Property_Validation_Number_ValueTooHighException',
             'PostcodeNl_Service_PostcodeAddress_AddressNotFoundException',
             #
