@@ -98,12 +98,34 @@ class Test_Adres_API(unittest.TestCase):
         "Oosterwolde",
         "Stationsstraat",
         ),
+       ("Hotel de Zon Oosterwolde",
+        ('8431ET', 1),
+        'error_building',
+        ["overige gebruiksfunctie"],
+        "Oosterwolde",
+        "Stationsstraat",
+        1
+        ),
+       ("Hotel de Zon Oosterwolde",
+        ('8431ET', 1),
+        'verblijfsobject',
+        ["overige gebruiksfunctie", "cannot_find"],
+        "Oosterwolde",
+        "Stationsstraat",
+        2
+        ),
        ])
     def test_Postcode_and_translation(self, description,
                                       pc, addressType,
-                                      purpose, city, street):
+                                      purpose, city, street, errFlag=0):
         """verify response data."""
         retValue = api.get_postcodedata(*pc)
+        if errFlag == 1:
+            # force a lookup error
+            retValue['addressType'] = "error_building"
+        if errFlag == 2:
+            # force a lookup error
+            retValue['purposes'].append("cannot_find")
         retValue = parse_response(retValue, pc)
         self.assertTrue(retValue['addressType'] == addressType and
                         retValue['purposes'].sort() == purpose.sort() and
