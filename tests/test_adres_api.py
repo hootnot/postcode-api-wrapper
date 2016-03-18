@@ -193,9 +193,11 @@ class Test_Adres_API(unittest.TestCase):
         caught_exception = cm.exception
 
         expected_exception = PostcodeError(
-            "PostcodeNl_Controller_Plugin_HttpBasicAuthentication_NotAuthorizedException", {
+            "PostcodeNl_Controller_Plugin_HttpBasic"
+            "Authentication_NotAuthorizedException", {
                 "exception": "User `1%s` not correct." % access_key,
-                "exceptionId": "PostcodeNl_Controller_Plugin_HttpBasicAuthentication_NotAuthorizedException"})
+                "exceptionId": "PostcodeNl_Controller_Plugin_HttpBasic"
+                               "Authentication_NotAuthorizedException"})
         self.assertEqual(expected_exception.msg,
                          caught_exception.msg)
 
@@ -216,9 +218,11 @@ class Test_Adres_API(unittest.TestCase):
         caught_exception = cm.exception
 
         expected_exception = PostcodeError(
-            "PostcodeNl_Controller_Plugin_HttpBasicAuthentication_PasswordNotCorrectException", {
+            "PostcodeNl_Controller_Plugin_HttpBasic"
+            "Authentication_PasswordNotCorrectException", {
                 "exception": "Password not correct.",
-                "exceptionId": "PostcodeNl_Controller_Plugin_HttpBasicAuthentication_PasswordNotCorrectException"})
+                "exceptionId": "PostcodeNl_Controller_Plugin_HttpBasic"
+                               "Authentication_PasswordNotCorrectException"})
         self.assertEqual(expected_exception.msg,
                          caught_exception.msg)
 
