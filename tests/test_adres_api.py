@@ -1,8 +1,15 @@
 """Adres API tests."""
 import unittest
 import postcodepy
+from postcodepy import typedefs
 from postcodepy import PostcodeError
 from . import unittestsetup
+
+try:
+    from nose_parameterized import parameterized, param
+except:
+    print("*** Please install 'nose_parameterized' to run these tests ***")
+    exit(0)
 
 import os
 import sys
@@ -10,6 +17,13 @@ import sys
 access_key = None
 access_secret = None
 api = None
+
+
+@typedefs.translate_addresstype
+@typedefs.translate_purposes
+def parse_response(r, pc):
+    """manipulate the response."""
+    return r
 
 
 class Test_Adres_API(unittest.TestCase):
@@ -33,6 +47,68 @@ class Test_Adres_API(unittest.TestCase):
         api = postcodepy.API(environment='live',
                              access_key=access_key,
                              access_secret=access_secret)
+
+    @parameterized.expand([
+       ("Rijksmuseum",
+        ('1071XX', 1),
+        'verblijfsobject',
+        ["bijeenkomstfunctie"],
+        "Amsterdam",
+        "Museumstraat",
+        ),
+       ("Sportschool",
+        ('8431NJ', 23),
+        'verblijfsobject',
+        ["overige gebruiksfunctie"],
+        "Oosterwolde",
+        "Veengang",
+        ),
+       ("Gamma",
+        ('8431NJ', 8),
+        'verblijfsobject',
+        ["kantoorfunctie", "winkelfunctie"],
+        "Oosterwolde",
+        "Veengang",
+        ),
+       ("Industrieterrein Douwe Egberts Joure",
+        ('8501ZD', 1),
+        'verblijfsobject',
+        ["industriefunctie", "kantoorfunctie", "overige gebruiksfunctie"],
+        "Joure",
+        "Leeuwarderweg",
+        ),
+       ("Ziekenhuis Tjongerschans Heerenveen",
+        ('8441PW', 44),
+        'verblijfsobject',
+        ["gezondheidszorgfunctie"],
+        "Heerenveen",
+        "Thialfweg",
+        ),
+       ("De Marwei te Leeuwarden",
+        ('8936AS', 7),
+        'verblijfsobject',
+        ["celfunctie"],
+        "Leeuwarden",
+        "Holstmeerweg",
+        ),
+       ("Hotel de Zon Oosterwolde",
+        ('8431ET', 1),
+        'verblijfsobject',
+        ["overige gebruiksfunctie"],
+        "Oosterwolde",
+        "Stationsstraat",
+        ),
+       ])
+    def test_Postcode_and_translation(self, description,
+                                      pc, addressType,
+                                      purpose, city, street):
+        """verify response data."""
+        retValue = api.get_postcodedata(*pc)
+        retValue = parse_response(retValue, pc)
+        self.assertTrue(retValue['addressType'] == addressType and
+                        retValue['purposes'].sort() == purpose.sort() and
+                        retValue['city'] == city and
+                        retValue['street'] == street)
 
     def test_PostcodeDataOK(self):
         """TEST: retrieval of data.
