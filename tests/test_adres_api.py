@@ -110,16 +110,6 @@ class Test_Adres_API(unittest.TestCase):
                         retValue['city'] == city and
                         retValue['street'] == street)
 
-    def test_PostcodeDataOK(self):
-        """TEST: retrieval of data.
-
-        should return testvalues for city and street
-        """
-        pc = ('1071XX', 1)
-        retValue = api.get_postcodedata(*pc)
-        self.assertEqual((retValue['city'], retValue['street']),
-                         ("Amsterdam", "Museumstraat"))
-
     def test_PostcodeDataWithAdditionOK(self):
         """TEST: retrieval of data.
 
