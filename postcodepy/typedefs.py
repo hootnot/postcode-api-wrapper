@@ -5,13 +5,14 @@ from functools import wraps
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
 
-POSTCODE_API_TYPEDEFS = {
-    # addressType
+POSTCODE_API_TYPEDEFS_ADDRESS_TYPES = {
     "building": "verblijfsobject",
     "house boat site": 'location used for mooring house boats',
     "mobile home site": 'location used for mobile homes and trailers',
     "PO box": 'PO box',
-    # purposes
+}
+
+POSTCODE_API_TYPEDEFS_PURPOSES = {
     "residency": "woonfunctie",
     "assembly": "bijeenkomstfunctie",
     "detention": "celfunctie",
@@ -61,7 +62,7 @@ def translate_addresstype(f):
     def wr(r, pc):
         at = r["addressType"]
         try:
-            r.update({"addressType": POSTCODE_API_TYPEDEFS[at]})
+            r.update({"addressType": POSTCODE_API_TYPEDEFS_ADDRESS_TYPES[at]})
         except:
             logger.warn("Warning: {}: "
                         "unknown 'addressType': {}".format(pc, at))
@@ -82,7 +83,7 @@ def translate_purposes(f):
         tmp = []
         for P in r["purposes"]:
             try:
-                tmp.append(POSTCODE_API_TYPEDEFS[P])
+                tmp.append(POSTCODE_API_TYPEDEFS_PURPOSES[P])
             except:
                 logger.warn("Warning: {}: "
                             "cannot translate 'purpose': {}".format(pc, P))
