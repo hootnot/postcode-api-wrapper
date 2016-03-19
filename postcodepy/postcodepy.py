@@ -35,7 +35,7 @@ class EndpointsMixin(object):
         if addition:
             endpoint += '/' + addition
 
-        retValue = self.request(endpoint, params=params)
+        retValue = self._API__request(endpoint, params=params)
 
         # then it should match the houseNumberAdditions
         if addition and addition.upper() not in \
@@ -69,7 +69,8 @@ class EndpointsMixin(object):
         # The 'sar'-request dictionary should be sent as valid JSON data, so
         # we need to convert it to JSON
         # when we construct the request in API.request
-        retValue = self.request(endpoint, 'POST', params=params, convJSON=True)
+        retValue = self._API__request(endpoint, 'POST',
+                                      params=params, convJSON=True)
 
         return retValue
 
@@ -118,10 +119,10 @@ class API(EndpointsMixin, object):
         # Enable basic authentication
         self.client.auth = (access_key, access_secret)
 
-    def request(self, endpoint, method='GET', params=None, convJSON=False):
+    def __request(self, endpoint, method='GET', params=None, convJSON=False):
         """request - Returns dict of response from postcode.nl API.
 
-        this method is called by the EndpointMixin methods
+        This method is called only by the EndpointMixin methods.
         """
         url = '%s/%s' % (self.api_url, endpoint)
 
@@ -182,6 +183,7 @@ class PostcodeError(Exception):
             'PostcodeNl_Controller_Address_InvalidHouseNumberException',
             'PostcodeNl_Controller_Address_NoPostcodeSpecifiedException',
             'PostcodeNl_Controller_Address_NoHouseNumberSpecifiedException',
+            'PostcodeNl_Controller_Address_PostcodeTooLongException',
             'React_Model_Property_Validation_Number_ValueTooHighException',
             'PostcodeNl_Service_PostcodeAddress_AddressNotFoundException',
             #

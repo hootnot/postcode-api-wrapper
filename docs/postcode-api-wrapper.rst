@@ -21,3 +21,5 @@ Exceptions
       :inherited-members:
       :show-inheritance:
       :special-members: __init__
+
+.. include:: typedefs/typedefs.rst
