@@ -156,3 +156,55 @@ Exceptions
         "A"
       ]
     }
+
+
+Using typedefs on API responses
+```````````````````````````````
+
+The example below applies the decorators to `parse_result`, this function 
+will translate the `addressType` field and the values of the `purposes` field. 
+
+.. code-block:: python
+   :caption: Typedef example
+
+    ...
+    from postcodepy import typedefs
+    ...
+
+    @typedefs.translate_purposes
+    @typedefs.translate_addresstype
+    def parse_result(r, pc):
+        return r
+
+    rv = api.get_postcodedata(*pc)
+    rv = parse_result(rv, pc)
+
+Will result in:
+
+.. code-block:: json
+
+    {
+      "addressType": "verblijfsobject",
+      "bagAddressableObjectId": "0080010000394794", 
+      "bagNumberDesignationId": "0080200000394793", 
+      "city": "Leeuwarden", 
+      "houseNumber": 7, 
+      "houseNumberAddition": "", 
+      "houseNumberAdditions": [
+        ""
+      ], 
+      "latitude": 53.1926878, 
+      "longitude": 5.83081603, 
+      "municipality": "Leeuwarden", 
+      "postcode": "8936AS", 
+      "province": "Friesland", 
+      "purposes": [
+        "celfunctie"
+      ], 
+      "rdX": 184649, 
+      "rdY": 578538, 
+      "street": "Holstmeerweg", 
+      "surfaceArea": 19570
+    }
+
+In this output are the values of `addressType` and `purposes` translation results.
