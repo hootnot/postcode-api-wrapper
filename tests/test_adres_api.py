@@ -9,7 +9,7 @@ try:
     from nose_parameterized import parameterized, param
 except:
     print("*** Please install 'nose_parameterized' to run these tests ***")
-    exit(0)
+    exit(1)
 
 import os
 import sys
