@@ -64,8 +64,8 @@ def translate_addresstype(f):
         try:
             r.update({"addressType": POSTCODE_API_TYPEDEFS_ADDRESS_TYPES[at]})
         except:
-            logger.warn("Warning: {}: "
-                        "unknown 'addressType': {}".format(pc, at))
+            logger.warning("Warning: {}: "
+                           "unknown 'addressType': {}".format(pc, at))
 
         return f(r, pc)
 
@@ -85,8 +85,8 @@ def translate_purposes(f):
             try:
                 tmp.append(POSTCODE_API_TYPEDEFS_PURPOSES[P])
             except:
-                logger.warn("Warning: {}: "
-                            "cannot translate 'purpose': {}".format(pc, P))
+                logger.warning("Warning: {}: "
+                               "cannot translate 'purpose': {}".format(pc, P))
                 tmp.append(P)
 
         r.update({"purposes": tmp})
