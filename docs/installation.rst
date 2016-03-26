@@ -18,7 +18,7 @@ From pypi
 
 Install the package with pip::
 
-    $ pip install postcode-api-wrapper
+    $ pip install postcodepy
 
 You may consider using *virtualenv* to create isolated Python environments. Python 3.4 has *pyvenv* providing
 the same kind of functionality.
