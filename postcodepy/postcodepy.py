@@ -31,7 +31,7 @@ class EndpointsMixin(object):
         returns :
             a response dictionary
         """
-        endpoint = 'rest/addresses/%s/%s' % (postcode, nr)
+        endpoint = 'addresses/postcode/%s/%s' % (postcode, nr)
         if addition:
             endpoint += '/' + addition
 
@@ -104,7 +104,7 @@ class API(EndpointsMixin, object):
         if environment == 'practice':
             raise PostcodeError("ERRnoPractice")
         elif environment == 'live':
-            self.api_url = 'https://api.postcode.nl'
+            self.api_url = 'https://api.postcode.eu/nl/v1'
 
         self.client = requests.Session()
 
